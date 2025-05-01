@@ -76,16 +76,33 @@ function App() {
     };
   }, [intervalId]);
 
-  const memoizedMoviesList = useMemo(() => {
-    return movies.length > 0 ? <MoviesList movies={movies} /> : null;
-  }, [movies]);
+  const deleteMovieHandler = async (movieId) => {
+    try {
+      const response = await fetch(`https://movie-app-bb727-default-rtdb.firebaseio.com/movies/${movieId}.json`, {
+        method: 'DELETE',
+      });
 
- 
+      if (!response.ok) {
+        throw new Error('Failed to delete movie');
+      }
+
+      setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== movieId));
+    } catch (error) {
+      console.error('Delete error:', error.message);
+      setError('Failed to delete movie.');
+    }
+  };
+
+  const memoizedMoviesList = useMemo(() => {
+    return movies.length > 0 ? (
+      <MoviesList movies={movies} onDeleteMovie={deleteMovieHandler} />
+    ) : null;
+  }, [movies]);
 
   return (
     <React.Fragment>
       <section className="form-section">
-        <AddMovieForm/>
+        <AddMovieForm />
         <button onClick={fetchMoviesHandler} className="fetch-button">Fetch Movies</button>
         {isRetrying && <button onClick={cancelRetryHandler} className="fetch-button">Cancel Retry</button>}
       </section>

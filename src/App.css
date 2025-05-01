@@ -27,3 +27,29 @@ button:active {
   background-color: #460897;
   border-color: #460897;
 }
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+.movie-item {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.movies-list {
+  list-style: none;
+  padding: 0;
+}
