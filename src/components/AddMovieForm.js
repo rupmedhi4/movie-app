@@ -15,15 +15,32 @@ const AddMovieForm = () => {
             [name]: value
         }));
     };
-
-    const addMovieHandler = () => {
-        console.log("New Movie Object:", newMovie);
-        setNewMovie({
+    const addMovieHandler = async () => {
+        try {
+          const response = await fetch('https://movie-app-bb727-default-rtdb.firebaseio.com/movies.json', {
+            method: 'POST',
+            body: JSON.stringify(newMovie),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to add movie');
+          }
+      
+          setNewMovie({
             title: '',
             openingText: '',
             releaseDate: ''
-        });
-    };
+          });
+      
+          alert("Movie added successfully!");
+        } catch (error) {
+          console.error(error.message);
+        }
+      };
+      
     return (
         <div className="add-movie-form">
 

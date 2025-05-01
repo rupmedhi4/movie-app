@@ -10,45 +10,50 @@ function App() {
   const [isRetrying, setIsRetrying] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
  
-
   const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      const response = await fetch('https://swapi.py4e.com/api/films/');
+      const response = await fetch('https://movie-app-bb727-default-rtdb.firebaseio.com/movies.json');
+  
       if (!response.ok) {
         throw new Error('Something went wrong... Retrying');
       }
-
+  
       const data = await response.json();
-
-      const transformedMovies = data.results.map((movieData) => ({
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      }));
-
-      setMovies(transformedMovies);
+  
+      const loadedMovies = [];
+  
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate
+        });
+      }
+  
+      setMovies(loadedMovies);
       setIsRetrying(false);
-
+  
       if (intervalId) {
         clearInterval(intervalId);
         setIntervalId(null);
       }
     } catch (err) {
       setError('Something went wrong... Retrying');
-
+  
       if (!intervalId) {
         setIsRetrying(true);
         const id = setInterval(fetchMoviesHandler, 5000);
         setIntervalId(id);
       }
     }
-
+  
     setIsLoading(false);
   }, [intervalId]);
+  
 
   const cancelRetryHandler = useCallback(() => {
     if (intervalId) {
